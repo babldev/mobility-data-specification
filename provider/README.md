@@ -37,35 +37,6 @@ MDS defines [JSON Schema](https://json-schema.org/) files for [`trips`][trips-sc
 
 `provider` API responses must validate against their respective schema files. The schema files always take precedence over the language and examples in this and other supporting documentation meant for *human* consumption.
 
-### Pagination
-
-`provider` APIs may decide to paginate the data payload. If so, pagination must comply with the [JSON API](http://jsonapi.org/format/#fetching-pagination) specification.
-
-The following keys must be used for pagination links:
-
-* `first`: url to the first page of data
-* `last`: url to the last page of data
-* `prev`: url to the previous page of data
-* `next`: url to the next page of data
-
-```json
-{
-    "version": "x.y.z",
-    "data": {
-        "trips": [{
-            "provider_id": "...",
-            "trip_id": "...",
-        }]
-    },
-    "links": {
-        "first": "https://...",
-        "last": "https://...",
-        "prev": "https://...",
-        "next": "https://..."
-    }
-}
-```
-
 ### UUIDs for Devices
 
 MDS defines the *device* as the unit that transmits GPS signals for a particular vehicle. A given device must have a UUID (`device_id` below) that is unique within the Provider's fleet.
@@ -110,10 +81,10 @@ A trip represents a journey taken by a *mobility as a service* customer with a g
 
 The trips API allows a user to query historical trip data.
 
-Endpoint: `/trips`  
-Method: `GET`  
-Schema: [`trips` schema][trips-schema]  
-`data` Payload: `{ "trips": [] }`, an array of objects with the following structure  
+Endpoint: `/trips/{bucket_duration}/{min_end_time}`
+Method: `GET`
+Schema: [`trips` schema][trips-schema]
+`data` Payload: `{ "trips": [] }`, an array of objects with the following structure
 
 
 | Field | Type    | Required/Optional | Comments |
@@ -135,25 +106,18 @@ Schema: [`trips` schema][trips-schema]
 | `standard_cost` | Integer | Optional | The cost, in cents, that it would cost to perform that trip in the standard operation of the System |
 | `actual_cost` | Integer | Optional | The actual cost, in cents, paid by the customer of the *mobility as a service* provider |
 
-### Trips Query Parameters
+### URL Parameters
 
-The trips API should allow querying trips with a combination of query parameters.
+In order to support caching of data, the Provider and Agency should agree upon a time interval for bucketing of data.
 
-* `device_id`
-* `vehicle_id`
-* `min_end_time`: filters for trips where `end_time` occurs at or after the given time
-* `max_end_time`: filters for trips where `end_time` occurs before the given time
-* `bbox`
+| Field | Type | Comments |
+| ----- | ---- | -------- |
+| bucket_duration | integer | Bucket duration in seconds. Static value. |
+| min_end_time | timestamp (integer) | Bucket identifier indicating the start period for the bucket. Must be a multiple of `bucket_duration` |
 
-All of these query params will use the *Type* listed above with the exception of `bbox`, which is the bounding-box.
-
-For example:
-
-```
-bbox=-122.4183,37.7758,-122.4120,37.7858
-```
-
-Gets all trips within that bounding-box where any point inside the `route` is inside said box. The order is defined as: southwest longitude, southwest latitude, northeast longitude, northeast latitude (separated by commas).
+For example, 1 hour bucket would look like this:
+ - `GET /trips/3600/1543352400` Nov 27, 9pm UTC
+ - `GET /trips/3600/1543356000` Nov 27, 10pm UTC
 
 ### Vehicle Types
 
@@ -217,9 +181,9 @@ The status of the inventory of vehicles available for customer use.
 
 This API allows a user to query the historical availability for a system within a time range.
 
-Endpoint: `/status_changes`  
-Method: `GET`  
-Schema: [`status_changes` schema][sc-schema]  
+Endpoint: `/status_changes/{bucket_duration}/{min_event_time}`
+Method: `GET`
+Schema: [`status_changes` schema][sc-schema]
 `data` Payload: `{ "status_changes": [] }`, an array of objects with the following structure
 
 | Field | Type | Required/Optional | Comments |
@@ -237,19 +201,18 @@ Schema: [`status_changes` schema][sc-schema]
 | `battery_pct` | Float | Required if Applicable | Percent battery charge of device, expressed between 0 and 1 |
 | `associated_trips` | UUID[] | Optional based `event_type_reason` | Array of UUID's. For `user`-generated event types, associated trips (foreign key to Trips API) |
 
-### Status Changes Query Parameters
+### URL Parameters
 
-The status_changes API should allow querying status changes with a combination of query parameters.
+In order to support caching of data, the Provider and Agency should agree upon a time interval for bucketing of data.
 
-* `start_time`: filters for status changes where `event_time` occurs at or after the given time
-* `end_time`: filters for status changes where `event_time` occurs before the given time
-* `bbox`: filters for status changes where `event_location` is within defined bounding-box. The order is definied as: southwest longitude, southwest latitude, northeast longitude, northeast latitude (separated by commas). 
+| Field | Type | Comments |
+| ----- | ---- | -------- |
+| bucket_duration | integer | Bucket duration in seconds. Static value. |
+| min_event_time | timestamp (integer) | Bucket identifier indicating the start period for the bucket. Must be a multiple of `bucket_duration` |
 
-Example:
-
-```
-bbox=-122.4183,37.7758,-122.4120,37.7858
-```
+For example, 1 hour bucket would look like this:
+ - `GET /status_changes/3600/1543352400` Nov 27, 9pm UTC
+ - `GET /status_changes/3600/1543356000` Nov 27, 10pm UTC
 
 ### Event Types
 
