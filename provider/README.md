@@ -182,8 +182,8 @@ The status of the inventory of vehicles available for customer use.
 This API allows a user to query the historical availability for a system within a time range.
 
 Endpoint: `/status_changes/{bucket_duration}/{min_event_time}`
-Method: `GET`
-Schema: [`status_changes` schema][sc-schema]
+Method: `GET`  
+Schema: [`status_changes` schema][sc-schema]  
 `data` Payload: `{ "status_changes": [] }`, an array of objects with the following structure
 
 | Field | Type | Required/Optional | Comments |
