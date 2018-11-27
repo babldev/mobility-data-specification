@@ -108,7 +108,7 @@ Schema: [`trips` schema][trips-schema]
 
 ### URL Parameters
 
-In order to support caching of data, the Provider and Agency should agree upon a time interval for bucketing of data.
+In order to support caching of data, the Provider and Agency should agree upon a fixed time interval for bucketing.
 
 | Field | Type | Comments |
 | ----- | ---- | -------- |
@@ -118,6 +118,8 @@ In order to support caching of data, the Provider and Agency should agree upon a
 For example, 1 hour bucket would look like this:
  - `GET /trips/3600/1543352400` Nov 27, 9pm UTC
  - `GET /trips/3600/1543356000` Nov 27, 10pm UTC
+
+If the data for the bucket is not yet prepared, a 404 HTTP Status Code should be returned. The Agency should retry the request at a later time. The Provider and Agency should agree upon an SLA around when data should be ready (e.g. 3 minutes after the hour).
 
 ### Vehicle Types
 
@@ -203,7 +205,7 @@ Schema: [`status_changes` schema][sc-schema]
 
 ### URL Parameters
 
-In order to support caching of data, the Provider and Agency should agree upon a time interval for bucketing of data.
+In order to support caching of data, the Provider and Agency should agree upon a fixed time interval for bucketing.
 
 | Field | Type | Comments |
 | ----- | ---- | -------- |
@@ -213,6 +215,8 @@ In order to support caching of data, the Provider and Agency should agree upon a
 For example, 1 hour bucket would look like this:
  - `GET /status_changes/3600/1543352400` Nov 27, 9pm UTC
  - `GET /status_changes/3600/1543356000` Nov 27, 10pm UTC
+
+If the data for the bucket is not yet prepared, a 404 HTTP Status Code should be returned. The Agency should retry the request at a later time. The Provider and Agency should agree upon an SLA around when data should be ready (e.g. 3 minutes after the hour).
 
 ### Event Types
 
