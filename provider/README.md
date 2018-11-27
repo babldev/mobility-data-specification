@@ -81,10 +81,10 @@ A trip represents a journey taken by a *mobility as a service* customer with a g
 
 The trips API allows a user to query historical trip data.
 
-Endpoint: `/trips/{bucket_duration}/{min_end_time}`
-Method: `GET`
-Schema: [`trips` schema][trips-schema]
-`data` Payload: `{ "trips": [] }`, an array of objects with the following structure
+Endpoint: `/trips/{bucket_duration}/{min_end_time}`  
+Method: `GET`  
+Schema: [`trips` schema][trips-schema]  
+`data` Payload: `{ "trips": [] }`, an array of objects with the following structure  
 
 
 | Field | Type    | Required/Optional | Comments |
@@ -233,8 +233,8 @@ For example, 1 hour bucket would look like this:
 
 Gets the list of service areas available to the provider.
 
-Endpoint: `/service_areas`
-Method: `GET`
+Endpoint: `/service_areas`  
+Method: `GET`  
 Query Parameters:
 
 | Parameter | Type | Required/Optional | Description |
