@@ -233,8 +233,8 @@ For example, 1 hour bucket would look like this:
 
 Gets the list of service areas available to the provider.
 
-Endpoint: `/service_areas`  
-Method: `GET`  
+Endpoint: `/service_areas`
+Method: `GET`
 Query Parameters:
 
 | Parameter | Type | Required/Optional | Description |
